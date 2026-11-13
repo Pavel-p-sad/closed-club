@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Список участников</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<h1>Все участники и их коды</h1>
+<ul>
+    <li th:each="p : ${participants}">
+        <strong th:text="${p.id} + '. ' + ${p.name} + ' ' + ${p.lastName} + ' (' + ${p.postName} + ')'"></strong>
+        <ul>
+            <li th:each="qr : ${p.qrCodes}">
+                <span th:text="'id (' + ${qr.id} + ')---- ' + ${qr.uuid}"></span>
+            </li>
+        </ul>
+    </li>
+
+</ul>
+<a href="/api/admin/page" class="btn">Назад</a>
+</body>
+</html>
