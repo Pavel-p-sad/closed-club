@@ -1,52 +1,50 @@
-//Пока что вместо обработанной ошибки прилетает простыня. Исправлю позже
 package com.example.closed_club.controller;
 import com.example.closed_club.dto.ParticipantDto;
 import com.example.closed_club.entity.Participant;
 import com.example.closed_club.service.ParticipantService;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PostMapping;
 import java.util.List;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping("/api/participants")
+@RequestMapping("/api/v1/participants")
+@RequiredArgsConstructor
 public class ParticipantRESTController {
-    private final ParticipantService  participantService;
-    public ParticipantRESTController(ParticipantService participantService) {
-        this.participantService = participantService;
-    }
+    private final ParticipantService participantService;
 
-    @GetMapping
-    public List<ParticipantDto> findAll() {
-        List<Participant> p = participantService.findAll();
-        List<ParticipantDto> dto = new ArrayList<>();
-        for (Participant p1 : p) {
-            dto.add(new ParticipantDto(p1.getId(), p1.getName(), p1.getLastName(), p1.getPostName()));
-        }
-        return dto;
+    public ResponseEntity<List<ParticipantDto>> findAll() {
+        return ResponseEntity.ok(participantService.findAllDto());
     }
 
     @GetMapping("/{id}")
-    public ParticipantDto findById(@PathVariable Long id) {
-        Participant p = participantService.findById(id);
-        return new ParticipantDto(p.getId(), p.getName(), p.getLastName(), p.getPostName());
+    public ResponseEntity<ParticipantDto> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(participantService.findByIdDto(id));
     }
 
     @PostMapping
-    public ParticipantDto create(@RequestBody Participant participant) {
-        Participant saved = participantService.save(participant);
-        return new ParticipantDto(saved.getId(), saved.getName(), saved.getLastName(), saved.getPostName());
+    public ResponseEntity<ParticipantDto> create(@Valid @RequestBody Participant participant) {
+        ParticipantDto dto = participantService.createDto(participant);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         participantService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
-    public ParticipantDto update(@RequestBody Participant participant, @PathVariable Long id) {
-        Participant up = participantService.update( id, participant);
-        return new ParticipantDto( up.getId(), up.getName(), up.getLastName(), up.getPostName());
+    public ResponseEntity<ParticipantDto> update(@Valid @RequestBody Participant participant, @PathVariable Long id) {
+        return ResponseEntity.ok(participantService.updateDto(participant, id));
     }
-
 }

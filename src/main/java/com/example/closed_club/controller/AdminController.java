@@ -2,27 +2,26 @@
 package com.example.closed_club.controller;
 import com.example.closed_club.entity.Participant;
 import com.example.closed_club.entity.QrCode;
+import com.example.closed_club.exception.NotFoundException;
 import com.example.closed_club.repository.ParticipantRepository;
 import com.example.closed_club.repository.QrCodeRepository;
 import com.example.closed_club.service.EntryService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Controller
 @RequestMapping("/api/admin")
+@RequiredArgsConstructor
 public class AdminController {
     private final QrCodeRepository qrCodeRepository;
     private final ParticipantRepository participantRepository;
     private final EntryService entryService;
-
-    public AdminController(QrCodeRepository qrCodeRepository, ParticipantRepository participantRepository, EntryService entryService) {
-         this.qrCodeRepository = qrCodeRepository;
-         this.participantRepository = participantRepository;
-         this.entryService = entryService;
-    }
 
     @GetMapping("/page")
     public String adminPage(){
@@ -59,7 +58,7 @@ public class AdminController {
     @PostMapping("/participants/give-qr")
     public String giveQrCode(@RequestParam Long id){
         Participant p = participantRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Participant not found"));
+                .orElseThrow(() -> new NotFoundException("Participant not found"));
         QrCode qr = new QrCode();
         qr.setUuid(UUID.randomUUID());
         qr.setDateTime(LocalDateTime.now());
@@ -80,7 +79,7 @@ public class AdminController {
             Participant p = entryService.checkEntry(UUID.fromString(uuid));
             model.addAttribute("result", "Проход разрешен," + p.getName() + " " + p.getLastName());
             model.addAttribute("success", true);
-        } catch (Exception e ) {
+        } catch (NotFoundException e ) {
             model.addAttribute("result", "ДОСТУП ЗАПРЕЩЕН: " + e.getMessage());
             model.addAttribute("success", false);
         }
@@ -96,7 +95,5 @@ public class AdminController {
             return "notFound";
         }
     }
-
-
 }
 

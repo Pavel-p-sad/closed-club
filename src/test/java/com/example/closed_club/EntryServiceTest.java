@@ -1,0 +1,63 @@
+package com.example.closed_club;
+import com.example.closed_club.entity.Participant;
+import com.example.closed_club.entity.QrCode;
+import com.example.closed_club.exception.NotFoundException;
+import com.example.closed_club.repository.ParticipantRepository;
+import com.example.closed_club.repository.QrCodeRepository;
+import com.example.closed_club.service.EntryService;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+class EntryServiceTest {
+
+    @Mock
+    private QrCodeRepository qrCodeRepository;
+
+    @Mock
+    private ParticipantRepository participantRepository;
+
+    @InjectMocks
+    private EntryService entryService;
+
+    @Test
+    void checkEntry_shouldReturnParticipant_whenUuidExists() {
+        // Arrange
+        UUID uuid = UUID.randomUUID();
+        Participant participant = new Participant();
+        participant.setId(1L);
+        participant.setName("Иван");
+
+        QrCode qrCode = new QrCode();
+        qrCode.setUuid(uuid);
+        qrCode.setParticipant(participant);
+
+        when(qrCodeRepository.findByUuid(uuid)).thenReturn(Optional.of(qrCode));
+
+        // Act
+        Participant result = entryService.checkEntry(uuid);
+
+        // Assert
+        assertEquals(participant, result);
+        verify(qrCodeRepository, times(1)).save(qrCode);
+    }
+
+    @Test
+    void checkEntry_shouldThrowNotFoundException_whenUuidNotFound() {
+        // Arrange
+        UUID uuid = UUID.randomUUID();
+        when(qrCodeRepository.findByUuid(uuid)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(NotFoundException.class, () -> entryService.checkEntry(uuid));
+    }
+}

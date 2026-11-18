@@ -1,10 +1,18 @@
 package com.example.closed_club.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
+@RequiredArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode
 public class QrCode {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,30 +23,4 @@ public class QrCode {
     @ManyToOne
     @JoinColumn(name = "participant_id")
     private Participant participant;
-
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
-    }
-    public void setParticipant(Participant participant) {
-        this.participant = participant;
-    }
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
-    }
-    public UUID getUuid() {
-        return uuid;
-    }
-    public Participant getParticipant() {
-        return participant;
-    }
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
-    public Long getId() {
-        return id;
-    }
-    public QrCode() {
-    }
 }
-
-
