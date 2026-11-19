@@ -59,7 +59,7 @@ public class AdminController {
 
     @GetMapping("/participants/list")
     public String listParticipants(Pageable pageable, org.springframework.ui.Model model){
-        model.addAttribute("participants", participantService.findAllDto(pageable));
+        model.addAttribute("participants", participantService.findAll(pageable));
         return "participants";
     }
 

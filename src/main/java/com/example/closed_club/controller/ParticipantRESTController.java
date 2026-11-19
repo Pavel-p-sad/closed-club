@@ -1,6 +1,5 @@
 package com.example.closed_club.controller;
 import com.example.closed_club.dto.ParticipantDto;
-import com.example.closed_club.entity.Participant;
 import com.example.closed_club.service.ParticipantService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,29 +24,28 @@ public class ParticipantRESTController {
 
     @GetMapping
     public ResponseEntity<Page<ParticipantDto>> findAll(Pageable pageable) {
-        return ResponseEntity.ok(participantService.findAllDto(pageable));
+        return ResponseEntity.ok(participantService.findAll(pageable));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ParticipantDto> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(participantService.findByIdDto(id));
+        return ResponseEntity.ok(participantService.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<ParticipantDto> create(@Valid @RequestBody Participant participant) {
-        ParticipantDto dto = participantService.createDto(participant);
-        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+    public ResponseEntity<ParticipantDto> create(@Valid @RequestBody ParticipantDto participant) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(participantService.create(participant));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+    public ResponseEntity<String> deleteById(@PathVariable Long id) {
         participantService.deleteById(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Participant deleted successfully");
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ParticipantDto> update(@Valid @RequestBody Participant participant, @PathVariable Long id) {
-        return ResponseEntity.ok(participantService.updateDto(participant, id));
+    public ResponseEntity<ParticipantDto> update(@Valid @RequestBody ParticipantDto participant, @PathVariable Long id) {
+        return ResponseEntity.ok(participantService.update(id, participant));
     }
 
 }

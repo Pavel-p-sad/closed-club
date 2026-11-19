@@ -18,10 +18,10 @@ public class QrCodeService {
     private final ParticipantRepository participantRepository;
     private final QrCodeRepository qrCodeRepository;
 
-    public QrCodeDto findByIdDto(Long id) {
+    public QrCodeDto findById(Long id) {
         return qrCodeRepository.findById(id).map(q -> new QrCodeDto(q.getId(), q.getUuid(), q.getDateTime(), q.getParticipant().getId())).orElseThrow(() -> new NotFoundException("QrCode not found"));
     }
-    public QrCodeDto createDto(Long participantId) {
+    public QrCodeDto create(Long participantId) {
         Participant p = participantRepository.findById(participantId)
                 .orElseThrow(() -> new NotFoundException("Participant not found"));
         QrCode qr = new QrCode();
@@ -31,7 +31,6 @@ public class QrCodeService {
         QrCode s = qrCodeRepository.save(qr);
         return new QrCodeDto(s.getId(), s.getUuid(), s.getDateTime(), p.getId());
     }
-
     public boolean delete(Long id) {
         if (qrCodeRepository.existsById(id)) {
             qrCodeRepository.deleteById(id);
@@ -39,11 +38,9 @@ public class QrCodeService {
         }
         return false;
     }
-
-    public Page<QrCodeDto> findAllDtosQr(Pageable pageable) {
+    public Page<QrCodeDto> findAllQr(Pageable pageable) {
         return qrCodeRepository.findAll(pageable).map(q -> new QrCodeDto(q.getId(), q.getUuid(), q.getDateTime(), q.getParticipant().getId() ));
     }
-
     public void giveQrById(Long id) {
         Participant p = participantRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Participant not found"));
@@ -53,7 +50,6 @@ public class QrCodeService {
         qr.setParticipant(p);
         qrCodeRepository.save(qr);
     }
-
     public Page<QrCodeDto> findByParticipantId(Long participantId, Pageable pageable) {
         return qrCodeRepository.findByParticipantId(participantId, pageable)
                 .map(q -> new QrCodeDto(q.getId(), q.getUuid(), q.getDateTime(), q.getParticipant().getId()));

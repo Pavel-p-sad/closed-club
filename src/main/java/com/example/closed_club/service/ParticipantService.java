@@ -13,38 +13,35 @@ import org.springframework.stereotype.Service;
 public class ParticipantService {
     private final ParticipantRepository participantRepository;
 
-    public Participant findById(Long id) {
-        return participantRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Participant not found"));
-    }
     public Participant save(Participant participant) {
         return participantRepository.save(participant);
     }
     public void deleteById(Long id) {
         participantRepository.deleteById(id);
     }
-    public Participant update (Long id, Participant upd) {
+    public ParticipantDto update (Long id, ParticipantDto upd) {
         Participant p = participantRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Participant not found"));
-        p.setName(upd.getName());
-        p.setLastName(upd.getLastName());
-        p.setPostName(upd.getPostName());
-        return save(p);
+        p.setName(upd.name());
+        p.setLastName(upd.lastName());
+        p.setPostName(upd.postName());
+        Participant saved = save(p);
+        return new ParticipantDto(saved.getId(), saved.getName(), saved.getLastName(), saved.getPostName());
     }
-    public Page<ParticipantDto> findAllDto(Pageable pageable) {
+    public Page<ParticipantDto> findAll(Pageable pageable) {
         return participantRepository.findAll(pageable).map(p -> new ParticipantDto(p.getId(), p.getName(), p.getLastName(), p.getPostName()));
     }
-    public ParticipantDto findByIdDto(Long id) {
+    public ParticipantDto findById(Long id) {
         return participantRepository.findById(id).map(p -> new ParticipantDto(p.getId(), p.getName(), p.getLastName(), p.getPostName()))
                 .orElseThrow(() -> new NotFoundException("не найдено"));
     }
-    public ParticipantDto createDto(Participant participant) {
-        Participant saved = save(participant);
+    public ParticipantDto create(ParticipantDto request) {
+        Participant p = new Participant();
+        p.setName(request.name());
+        p.setLastName(request.lastName());
+        p.setPostName(request.postName());
+        Participant saved = save(p);
         return new ParticipantDto(saved.getId(), saved.getName(), saved.getLastName(), saved.getPostName());
-    }
-    public ParticipantDto updateDto(Participant participant, Long id) {
-        Participant up = update( id, participant);
-        return new ParticipantDto( up.getId(), up.getName(), up.getLastName(), up.getPostName());
     }
     public void createParticipant(String firstName, String lastName, String postName) {
         Participant p = new Participant();

@@ -1,5 +1,6 @@
 package com.example.closed_club.controller;
 import com.example.closed_club.dto.QrCodeDto;
+import com.example.closed_club.exception.NotFoundException;
 import com.example.closed_club.service.QrCodeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/v1/qr-codes")
 @RequiredArgsConstructor
@@ -24,20 +23,20 @@ public class QrCodeRESTController {
 
     @GetMapping
     public ResponseEntity<Page<QrCodeDto>> findAll(Pageable pageable) {
-        return ResponseEntity.ok(qrCodeService.findAllDtosQr(pageable));
+        return ResponseEntity.ok(qrCodeService.findAllQr(pageable));
     }
     @GetMapping("/{id}")
     public ResponseEntity<QrCodeDto> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(qrCodeService.findByIdDto(id));
+        return ResponseEntity.ok(qrCodeService.findById(id));
     }
     @PostMapping
     public ResponseEntity<QrCodeDto> create(@RequestParam Long participantId) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(qrCodeService.createDto(participantId));
+        return ResponseEntity.status(HttpStatus.CREATED).body(qrCodeService.create(participantId));
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<String> delete(@PathVariable Long id) {
         qrCodeService.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Deleted successfully");
     }
     @GetMapping("/participant/{participantId}")
     public ResponseEntity<Page<QrCodeDto>> findByParticipantId(@PathVariable Long participantId,  Pageable pageable) {
