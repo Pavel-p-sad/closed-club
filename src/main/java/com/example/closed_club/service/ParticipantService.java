@@ -4,18 +4,15 @@ import com.example.closed_club.entity.Participant;
 import com.example.closed_club.exception.NotFoundException;
 import com.example.closed_club.repository.ParticipantRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class ParticipantService {
     private final ParticipantRepository participantRepository;
 
-    public List<Participant> findAll() {
-        return participantRepository.findAll();
-    }
     public Participant findById(Long id) {
         return participantRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Participant not found"));
@@ -34,17 +31,12 @@ public class ParticipantService {
         p.setPostName(upd.getPostName());
         return save(p);
     }
-    public List<ParticipantDto> findAllDto() {
-        List<Participant> p = findAll();
-        List<ParticipantDto> dto = new ArrayList<>();
-        for (Participant p1 : p) {
-            dto.add(new ParticipantDto(p1.getId(), p1.getName(), p1.getLastName(), p1.getPostName()));
-        }
-        return dto;
+    public Page<ParticipantDto> findAllDto(Pageable pageable) {
+        return participantRepository.findAll(pageable).map(p -> new ParticipantDto(p.getId(), p.getName(), p.getLastName(), p.getPostName()));
     }
     public ParticipantDto findByIdDto(Long id) {
-        Participant p = findById(id);
-        return new ParticipantDto(p.getId(), p.getName(), p.getLastName(), p.getPostName());
+        return participantRepository.findById(id).map(p -> new ParticipantDto(p.getId(), p.getName(), p.getLastName(), p.getPostName()))
+                .orElseThrow(() -> new NotFoundException("не найдено"));
     }
     public ParticipantDto createDto(Participant participant) {
         Participant saved = save(participant);
@@ -53,5 +45,12 @@ public class ParticipantService {
     public ParticipantDto updateDto(Participant participant, Long id) {
         Participant up = update( id, participant);
         return new ParticipantDto( up.getId(), up.getName(), up.getLastName(), up.getPostName());
+    }
+    public void createParticipant(String firstName, String lastName, String postName) {
+        Participant p = new Participant();
+        p.setName(firstName);
+        p.setLastName(lastName);
+        p.setPostName(postName);
+        participantRepository.save(p);
     }
 }

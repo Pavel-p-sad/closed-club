@@ -4,6 +4,8 @@ import com.example.closed_club.entity.Participant;
 import com.example.closed_club.service.ParticipantService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
-import java.util.List;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
@@ -22,8 +23,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class ParticipantRESTController {
     private final ParticipantService participantService;
 
-    public ResponseEntity<List<ParticipantDto>> findAll() {
-        return ResponseEntity.ok(participantService.findAllDto());
+    @GetMapping
+    public ResponseEntity<Page<ParticipantDto>> findAll(Pageable pageable) {
+        return ResponseEntity.ok(participantService.findAllDto(pageable));
     }
 
     @GetMapping("/{id}")
@@ -47,4 +49,5 @@ public class ParticipantRESTController {
     public ResponseEntity<ParticipantDto> update(@Valid @RequestBody Participant participant, @PathVariable Long id) {
         return ResponseEntity.ok(participantService.updateDto(participant, id));
     }
+
 }

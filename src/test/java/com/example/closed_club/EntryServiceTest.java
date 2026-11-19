@@ -1,4 +1,5 @@
 package com.example.closed_club;
+import com.example.closed_club.dto.ParticipantDto;
 import com.example.closed_club.entity.Participant;
 import com.example.closed_club.entity.QrCode;
 import com.example.closed_club.exception.NotFoundException;
@@ -19,13 +20,8 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class EntryServiceTest {
-
     @Mock
     private QrCodeRepository qrCodeRepository;
-
-    @Mock
-    private ParticipantRepository participantRepository;
-
     @InjectMocks
     private EntryService entryService;
 
@@ -42,22 +38,17 @@ class EntryServiceTest {
         qrCode.setParticipant(participant);
 
         when(qrCodeRepository.findByUuid(uuid)).thenReturn(Optional.of(qrCode));
+        ParticipantDto result = entryService.checkEntry(uuid);
 
-        // Act
-        Participant result = entryService.checkEntry(uuid);
-
-        // Assert
-        assertEquals(participant, result);
+        assertEquals(participant.getId(), result.id());
         verify(qrCodeRepository, times(1)).save(qrCode);
     }
 
     @Test
     void checkEntry_shouldThrowNotFoundException_whenUuidNotFound() {
-        // Arrange
         UUID uuid = UUID.randomUUID();
         when(qrCodeRepository.findByUuid(uuid)).thenReturn(Optional.empty());
 
-        // Act & Assert
         assertThrows(NotFoundException.class, () -> entryService.checkEntry(uuid));
     }
 }

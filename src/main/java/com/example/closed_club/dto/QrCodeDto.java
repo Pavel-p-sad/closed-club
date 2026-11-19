@@ -4,4 +4,3 @@ import java.util.UUID;
 
 public record QrCodeDto(Long id, UUID uuid, LocalDateTime dateTime, Long ParticipantId) {
 }
-
