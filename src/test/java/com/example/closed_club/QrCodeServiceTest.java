@@ -34,11 +34,8 @@ class QrCodeServiceTest {
         Participant p = new Participant();
         p.setId(1L);
         p.setName("йй");
-        QrCode sQr = new QrCode();
+        QrCode sQr = new QrCode(UUID.randomUUID(), LocalDateTime.now(), p);
         sQr.setId(10L);
-        sQr.setUuid(UUID.randomUUID());
-        sQr.setDateTime(LocalDateTime.now());
-        sQr.setParticipant(p);
 
         when(participantRepository.findById(1L)).thenReturn(Optional.of(p));
         when(qrCodeRepository.save(any(QrCode.class))).thenReturn(sQr);

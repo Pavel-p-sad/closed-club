@@ -27,10 +27,7 @@ public class ParticipantServiceTest {
 
     @Test
     void FindById_shouldReturnParticipant_whenUuidExists() {
-        Participant p = new Participant();
-        p.setName("Martin");
-        p.setLastName("Luter");
-        p.setPostName("Qrecer");
+        Participant p = new Participant("Martin", "Luter", "Qrecer");
         p.setId(392L);
 
         when(participantRepository.findById(392L)).thenReturn(Optional.of(p));
@@ -49,11 +46,8 @@ public class ParticipantServiceTest {
     @Test
     void shouldSaveAndReturnParticipantDtoWhenCallCreate(){
         ParticipantDto pD = new ParticipantDto(null, "Martin", "Luter", "Qrecer");
-        Participant savedEntity = new Participant();
+        Participant savedEntity = new Participant("Martin", "Luter", "Qrecer");
         savedEntity.setId(392L);
-        savedEntity.setName("Martin");
-        savedEntity.setLastName("Luter");
-        savedEntity.setPostName("Qrecer");
 
         when(participantRepository.save(any(Participant.class))).thenReturn(savedEntity);
         ParticipantDto result = participantService.create(pD);
@@ -63,10 +57,5 @@ public class ParticipantServiceTest {
         assertEquals("Qrecer", result.postName());
         assertEquals(392L, result.id());
         verify(participantRepository, times(1)).save(any(Participant.class));
-
-
     }
-
-
-
 }

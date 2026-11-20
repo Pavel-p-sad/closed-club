@@ -3,7 +3,6 @@ import com.example.closed_club.dto.ParticipantDto;
 import com.example.closed_club.entity.Participant;
 import com.example.closed_club.entity.QrCode;
 import com.example.closed_club.exception.NotFoundException;
-import com.example.closed_club.repository.ParticipantRepository;
 import com.example.closed_club.repository.QrCodeRepository;
 import com.example.closed_club.service.EntryService;
 import org.junit.jupiter.api.Test;
@@ -12,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,13 +29,10 @@ class EntryServiceTest {
     void checkEntry_shouldReturnParticipant_whenUuidExists() {
         // Arrange
         UUID uuid = UUID.randomUUID();
-        Participant participant = new Participant();
+        Participant participant = new Participant("Иван", "Иванов", "ййй");
         participant.setId(1L);
-        participant.setName("Иван");
 
-        QrCode qrCode = new QrCode();
-        qrCode.setUuid(uuid);
-        qrCode.setParticipant(participant);
+        QrCode qrCode = new QrCode(uuid, LocalDateTime.now(), participant);
 
         when(qrCodeRepository.findByUuid(uuid)).thenReturn(Optional.of(qrCode));
         ParticipantDto result = entryService.checkEntry(uuid);

@@ -24,10 +24,7 @@ public class QrCodeService {
     public QrCodeDto create(Long participantId) {
         Participant p = participantRepository.findById(participantId)
                 .orElseThrow(() -> new NotFoundException("Participant not found"));
-        QrCode qr = new QrCode();
-        qr.setUuid(UUID.randomUUID());
-        qr.setDateTime(LocalDateTime.now());
-        qr.setParticipant(p);
+        QrCode qr = new QrCode(UUID.randomUUID(), LocalDateTime.now(), p);
         QrCode s = qrCodeRepository.save(qr);
         return new QrCodeDto(s.getId(), s.getUuid(), s.getDateTime(), p.getId());
     }
@@ -44,10 +41,7 @@ public class QrCodeService {
     public void giveQrById(Long id) {
         Participant p = participantRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Participant not found"));
-        QrCode qr = new QrCode();
-        qr.setUuid(UUID.randomUUID());
-        qr.setDateTime(LocalDateTime.now());
-        qr.setParticipant(p);
+        QrCode qr = new QrCode(UUID.randomUUID(), LocalDateTime.now(), p);
         qrCodeRepository.save(qr);
     }
     public Page<QrCodeDto> findByParticipantId(Long participantId, Pageable pageable) {

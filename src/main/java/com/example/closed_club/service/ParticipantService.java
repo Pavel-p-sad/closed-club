@@ -35,19 +35,13 @@ public class ParticipantService {
         return participantRepository.findById(id).map(p -> new ParticipantDto(p.getId(), p.getName(), p.getLastName(), p.getPostName()))
                 .orElseThrow(() -> new NotFoundException("не найдено"));
     }
-    public ParticipantDto create(ParticipantDto request) {
-        Participant p = new Participant();
-        p.setName(request.name());
-        p.setLastName(request.lastName());
-        p.setPostName(request.postName());
+    public ParticipantDto create(ParticipantDto par) {
+        Participant p = new Participant(par.name(), par.lastName(), par.postName());
         Participant saved = save(p);
         return new ParticipantDto(saved.getId(), saved.getName(), saved.getLastName(), saved.getPostName());
     }
     public void createParticipant(String firstName, String lastName, String postName) {
-        Participant p = new Participant();
-        p.setName(firstName);
-        p.setLastName(lastName);
-        p.setPostName(postName);
+        Participant p = new Participant(firstName, lastName,  postName);
         participantRepository.save(p);
     }
 }

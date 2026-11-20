@@ -41,6 +41,11 @@ public class Participant {
     @OneToMany(mappedBy = "participant", cascade = CascadeType.ALL)
     private List<QrCode> qrCodes;
 
+    public Participant(String name, String lastName, String postName) {
+        this.name = name;
+        this.lastName = lastName;
+        this.postName = postName;
+    }
     public Participant() {
     }
 }
