@@ -43,7 +43,7 @@ class QrCodeServiceTest {
 
         assertNotNull(result);
         assertEquals(10L, result.id());
-        assertEquals(p.getId(), result.ParticipantId());
+        assertEquals(p.getId(), result.participantId());
         verify(qrCodeRepository, times(1)).save(any(QrCode.class));
     }
     @Test
