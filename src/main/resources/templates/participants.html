@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Список участников</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<h1>Все участники</h1>
+<ul>
+    <li th:each="p : ${participants.content}">
+        <strong th:text="${p.id + '. ' + p.name + ' ' + p.lastName + ' (' + p.postName + ')'}"></strong>
+        <a th:href="@{/api/admin/participants/{id}/qr-codes(id=${p.id})}" class="btn">Коды</a>
+    </li>
+</ul>
+<div>
+    <a th:if="${participants.hasPrevious()}" th:href="@{/api/admin/participants/list(page=${participants.number - 1})}">Назад</a>
+    <span th:text="${participants.number + 1} + ' / ' + ${participants.totalPages}"></span>
+    <a th:if="${participants.hasNext()}" th:href="@{/api/admin/participants/list(page=${participants.number + 1})}">Вперёд</a>
+</div>
+<a href="/api/admin/page" class="btn">Назад</a>
+</body>
+</html>

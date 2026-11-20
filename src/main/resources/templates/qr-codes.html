@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>QR-коды участника</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<h1>QR-коды участника #<span th:text="${participantId}"></span></h1>
+<div class="card">
+    <ul>
+        <li th:each="qr : ${qrCodes.content}">
+            <span th:text="${qr.id + '. ' + qr.uuid}"></span>
+        </li>
+    </ul>
+    <div>
+        <a th:if="${qrCodes.hasPrevious()}" th:href="@{/api/admin/participants/{id}/qr-codes(id=${participantId}, page=${qrCodes.number - 1})}">Назад</a>
+        <span th:text="${qrCodes.number + 1} + ' / ' + ${qrCodes.totalPages}"></span>
+        <a th:if="${qrCodes.hasNext()}" th:href="@{/api/admin/participants/{id}/qr-codes(id=${participantId}, page=${qrCodes.number + 1})}">Вперёд</a>
+    </div>
+</div>
+<a href="/api/admin/participants/list" class="btn">Назад к списку</a>
+</body>
+</html>
