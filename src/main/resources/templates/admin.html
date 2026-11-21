@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Админка клуба</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<h1>Управление клубом</h1>
+
+<!-- Блок результата проверки входа -->
+<div th:if="${result != null}"
+     th:classappend="${success} ? 'result-success' : 'result-error'"
+     class="result-box">
+    <strong th:text="${result}"></strong>
+</div>
+
+<div class="card">
+    <h2>Добавить участника</h2>
+    <form action="/api/admin/participants" method="post">
+        <input type="text" name="name" placeholder="Имя" required>
+        <input type="text" name="lastName" placeholder="Фамилия" required>
+        <input type="text" name="postName" placeholder="Должность" required>
+        <button type="submit" class="btn">Добавить</button>
+    </form>
+</div>
+
+<div class="card">
+    <h2>Удалить участника по ID</h2>
+    <form action="/api/admin/participants/delete" method="post">
+        <input type="number" name="id" placeholder="ID участника" required>
+        <button type="submit" class="btn">Удалить</button>
+    </form>
+</div>
+
+<div class="card">
+    <h2>Очистить всю базу</h2>
+    <form action="/api/admin/clear" method="post">
+        <button type="submit" class="btn">Очистить базу</button>
+    </form>
+</div>
+
+<div class="card">
+    <h2>Выдать QR-код участнику по ID</h2>
+    <form action="/api/admin/participants/give-qr" method="post">
+        <input type="number" name="id" placeholder="ID участника" required>
+        <button type="submit" class="btn">Выдать ключ</button>
+    </form>
+</div>
+
+<div class="card">
+    <h2>Удалить QR-код по ID кода</h2>
+    <form action="/api/admin/qr-code/clear" method="post">
+        <input type="number" name="id" placeholder="ID QR-кода" required>
+        <button type="submit" class="btn">Удалить QR</button>
+    </form>
+</div>
+
+<div class="card">
+    <h2>Список участников</h2>
+    <a href="/api/admin/participants/list" class="btn">Показать всех</a>
+</div>
+
+<div class="card">
+    <h2>Вход по QR-коду</h2>
+    <form action="/api/admin/check-entry" method="post">
+        <input type="text" name="uuid" placeholder="Введите UUID" required>
+        <button type="submit" class="btn btn-green">Проверить вход</button>
+    </form>
+</div>
+
+</body>
+</html>
